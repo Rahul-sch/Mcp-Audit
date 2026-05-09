@@ -426,15 +426,16 @@ function scanEnvExfil(ast: TSESTree.Program, file: SourceFile): Finding[] {
       }
     });
 
-    if (usesEnv && networkCall) {
+    if (usesEnv && networkCall !== null) {
+      const call: TSESTree.CallExpression = networkCall;
       findings.push({
         checkId: "ENV_EXFIL",
         severity: "HIGH",
         file: file.path,
-        line: networkCall.loc.start.line,
+        line: call.loc.start.line,
         message:
           "Function reads from process.env and makes a network call — verify env values are not exfiltrated",
-        snippet: snippetFor(file, networkCall),
+        snippet: snippetFor(file, call),
       });
     }
   }
